@@ -332,7 +332,7 @@ herr_t H5Utilities::closeHDF5Object(hid_t objectID)
  *  or HDF5_LINK or any combination of these using the bitwise or |
  *  command.  Or you can pass in HDF5_ANY to not filter at all
  */
-herr_t H5Utilities::getGroupObjects(hid_t locationID, int32_t typeFilter, std::list<std::string>& names)
+herr_t H5Utilities::getGroupObjects(hid_t locationID, H5Utilities::CustomHDFDataTypes typeFilter, std::list<std::string>& names)
 {
   H5SUPPORT_MUTEX_LOCK()
 
@@ -364,7 +364,7 @@ herr_t H5Utilities::getGroupObjects(hid_t locationID, int32_t typeFilter, std::l
     name.resize(size, 0);
 
     H5Lget_name_by_idx(locationID, ".", H5_INDEX_NAME, H5_ITER_INC, i, name.data(), size, H5P_DEFAULT);
-    if(typeFilter == static_cast<int32_t>(CustomHDFDataTypes::Any))
+    if(typeFilter == CustomHDFDataTypes::Any)
     {
       std::string objectName(name.data());
       names.push_back(objectName);
@@ -376,8 +376,8 @@ herr_t H5Utilities::getGroupObjects(hid_t locationID, int32_t typeFilter, std::l
       if(error >= 0)
       {
         type = objectInfo.type;
-        if(((type == H5O_TYPE_GROUP) && ((static_cast<int32_t>(CustomHDFDataTypes::Group) & typeFilter) != 0)) ||
-           ((type == H5O_TYPE_DATASET) && ((static_cast<int32_t>(CustomHDFDataTypes::Dataset) & typeFilter) != 0)))
+        if(((type == H5O_TYPE_GROUP) && ((static_cast<int32_t>(CustomHDFDataTypes::Group) & static_cast<int32_t>(typeFilter)) != 0)) ||
+           ((type == H5O_TYPE_DATASET) && ((static_cast<int32_t>(CustomHDFDataTypes::Dataset) & static_cast<int32_t>(typeFilter)) != 0)))
         {
           std::string objectName(name.data());
           names.push_back(objectName);

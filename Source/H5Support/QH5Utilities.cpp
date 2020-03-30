@@ -128,7 +128,7 @@ herr_t QH5Utilities::closeHDF5Object(hid_t objectID)
 //--------------------------------------------------------------------//
 // HDF Group Methods
 //--------------------------------------------------------------------//
-herr_t QH5Utilities::getGroupObjects(hid_t locationID, int32_t typeFilter, QList<QString>& names)
+herr_t QH5Utilities::getGroupObjects(hid_t locationID, H5Utilities::CustomHDFDataTypes typeFilter, QList<QString>& names)
 {
   std::list<std::string> childNames;
   herr_t error = H5Utilities::getGroupObjects(locationID, typeFilter, childNames);

@@ -39,6 +39,8 @@
 #include <hdf5.h>
 
 #include "H5Support/H5Support.h"
+#include "H5Support/H5Utilities.h"
+
 
 #ifndef H5Support_USE_QT
 #pragma message("THIS FILE SHOULD NOT BE INCLUDED UNLESS THE H5Support_USE_QT is also defined")
@@ -174,7 +176,7 @@ H5Support_EXPORT void printHDFClassType(H5T_class_t classType);
  * @param names Variable to store the list
  * @return
  */
-H5Support_EXPORT herr_t getGroupObjects(hid_t locationID, int32_t typeFilter, QList<QString>& names);
+H5Support_EXPORT herr_t getGroupObjects(hid_t locationID, H5Utilities::CustomHDFDataTypes typeFilter, QList<QString>& names);
 
 /**
  * @brief Creates a HDF Group by checking if the group already exists. If the

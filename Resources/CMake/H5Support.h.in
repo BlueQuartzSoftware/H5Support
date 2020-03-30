@@ -11,7 +11,8 @@
 #cmakedefine H5Support_USE_QT @H5Support_USE_QT@
 
 /* Include the DLL export preprocessor defines */
-#include "@PROJECT_NAME@/@PROJECT_NAME@DLLExport.h"
+//#include "@PROJECT_NAME@/@PROJECT_NAME@DLLExport.h"
+@INCLUDE_H5SUPPORT_DLL_HEADER@
 
 /* We are going to disable some warnings just to get a grip on all the warnings that get produced
 * during an MSVC build */
@@ -26,11 +27,6 @@
   std::lock_guard<std::mutex> lock(mutex);
 #else
 #define H5SUPPORT_MUTEX_LOCK()
-#endif
-
-#if defined(H5Support_NAMESPACE)
-namespace H5Support_NAMESPACE
-{
 #endif
 
 #if(_MSC_VER >= 1)

@@ -177,7 +177,7 @@ H5Support_EXPORT void printHDFClassType(H5T_class_t classType);
  * @param names Variable to store the list
  * @return
  */
-H5Support_EXPORT herr_t getGroupObjects(hid_t locationID, int32_t typeFilter, std::list<std::string>& names);
+H5Support_EXPORT herr_t getGroupObjects(hid_t locationID, CustomHDFDataTypes typeFilter, std::list<std::string>& names);
 
 /**
  * @brief Creates a HDF Group by checking if the group already exists. If the
