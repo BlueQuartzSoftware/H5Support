@@ -53,8 +53,16 @@ namespace H5Support_NAMESPACE
 class H5Support_EXPORT H5ScopedErrorHandler
 {
 public:
-  H5ScopedErrorHandler();
-  ~H5ScopedErrorHandler();
+  H5ScopedErrorHandler()
+  {
+    H5Eget_auto(H5E_DEFAULT, &_oldHDF_error_func, &_oldHDF_error_client_data);
+    H5Eset_auto(H5E_DEFAULT, nullptr, nullptr);
+  }
+
+  ~H5ScopedErrorHandler()
+  {
+    H5Eset_auto(H5E_DEFAULT, _oldHDF_error_func, _oldHDF_error_client_data);
+  }
 
   H5ScopedErrorHandler(const H5ScopedErrorHandler&) = delete;            // Copy Constructor Not Implemented
   H5ScopedErrorHandler(H5ScopedErrorHandler&&) = delete;                 // Move Constructor Not Implemented

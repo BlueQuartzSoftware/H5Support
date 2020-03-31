@@ -70,11 +70,26 @@ target_include_directories(H5SupportUnitTest
   PRIVATE
     ${${PLUGIN_NAME}Test_SOURCE_DIR}
     ${${PLUGIN_NAME}Test_BINARY_DIR}
+    $<INSTALL_INTERFACE:include>
+    $<BUILD_INTERFACE:${H5Support_SOURCE_DIR}/Source>
+    $<BUILD_INTERFACE:${H5Support_BINARY_DIR}>
 )
+
+
+set(H5Support_Link_Libs hdf5::hdf5-shared)
+if(H5Support_USE_QT)
+  set(QT5_RULES COPY)
+  if(H5Support_INSTALL_QT5)
+    list(APPEND QT5_RULES " " INSTALL)
+  endif()
+  find_package(Qt5 COMPONENTS Core REQUIRED)
+  TargetCopyInstall(${QT5_RULES} NAME "Qt5Core" TARGET Qt5::Core)
+  list(APPEND H5Support_Link_Libs Qt5::Core)
+endif()
 
 target_link_libraries(H5SupportUnitTest
   PRIVATE
-    H5Support::H5Support
+    ${H5Support_Link_Libs}
 )
 
 add_test(NAME H5SupportUnitTest COMMAND H5SupportUnitTest)

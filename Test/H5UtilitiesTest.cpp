@@ -146,7 +146,7 @@ public:
     error = H5Utilities::closeHDF5Object(testGroupID);
 
     std::list<std::string> groups;
-    error = H5Utilities::getGroupObjects(fileID, static_cast<int32_t>(H5Utilities::CustomHDFDataTypes::Any), groups);
+    error = H5Utilities::getGroupObjects(fileID, H5Utilities::CustomHDFDataTypes::Any, groups);
     H5SUPPORT_REQUIRE(error >= 0);
     H5SUPPORT_REQUIRE(groups.size() == 8);
 
