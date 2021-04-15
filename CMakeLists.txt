@@ -21,7 +21,10 @@ set(H5Support_USER_NAMESPACE "H5Support" CACHE STRING "Namespace for H5Support")
 
 option(H5Support_INCLUDE_QT_API "Include support for using Qt classes with H5Lite" ON)
 
-find_package(HDF5 NAMES hdf5 REQUIRED CONFIG)
+if(NOT HDF5_FOUND)
+  find_package(HDF5 NAMES hdf5 REQUIRED CONFIG)
+  set(HDF5_C_TARGET_NAME hdf5::hdf5-shared)
+endif()
 
 add_library(H5Support INTERFACE)
 add_library(H5Support::H5Support ALIAS H5Support)
@@ -85,7 +88,7 @@ endif()
 
 #TargetCopyInstall(${HDF5_RULES} NAME "hdf5" TARGET hdf5::hdf5-shared)
 
-set(H5Support_Link_Libs hdf5::hdf5-shared)
+set(H5Support_Link_Libs ${HDF5_C_TARGET_NAME})
 if(H5Support_USE_QT)
   set(QT5_RULES COPY)
   if(H5Support_INSTALL_QT5)
