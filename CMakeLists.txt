@@ -21,11 +21,9 @@ set(H5Support_USER_NAMESPACE "H5Support" CACHE STRING "Namespace for H5Support")
 
 option(H5Support_INCLUDE_QT_API "Include support for using Qt classes with H5Lite" ON)
 
-if(NOT HDF5_FOUND)
-  find_package(HDF5 NAMES hdf5 REQUIRED CONFIG)
-  set(HDF5_C_TARGET_NAME hdf5::hdf5-shared)
-endif()
-
+#------------------------------------------------------------------------------
+# Add the H5Support Library Target and an Alias for the target
+#------------------------------------------------------------------------------
 add_library(H5Support INTERFACE)
 add_library(H5Support::H5Support ALIAS H5Support)
 
@@ -86,23 +84,55 @@ if(H5Support_INSTALL_HDF5)
   list(APPEND HDF5_RULES " " INSTALL)
 endif()
 
-#TargetCopyInstall(${HDF5_RULES} NAME "hdf5" TARGET hdf5::hdf5-shared)
 
-set(H5Support_Link_Libs ${HDF5_C_TARGET_NAME})
+#------------------------------------------------------------------------------
+# Find the HDF5 Library
+#------------------------------------------------------------------------------
+message(STATUS "==|> FINDING HDF5......")
+if(SIMPL_EMBED_PYTHON) # -- HDF5 is located in a python virtual environment
+  set(HDF5_USE_STATIC_LIBRARIES OFF)
+  set(HDF5_FIND_COMPONENTS OFF)
+  find_package(HDF5 1.10.6 EXACT MODULE REQUIRED)
+  set(HDF5_C_TARGET_NAME hdf5::hdf5)
+  target_compile_definitions(H5Support INTERFACE H5_BUILT_AS_DYNAMIC_LIB)
+else() # -- Normal build with HDF5 found using HDF5Config.cmake
+  #find_package(HDF5 NAMES hdf5 REQUIRED CONFIG)
+
+  #------------------------------------------------------------------------------
+  # If the developer has set another CMP directory then use that, otherwise look
+  # for the CMP directory at the same level as the SIMPL directory
+  if("${CMP_SOURCE_DIR}" STREQUAL "")
+    set(CMP_SOURCE_DIR ${SIMPL_PARENT}/CMP)
+    message(STATUS "CMP_SOURCE_DIR: ${CMP_SOURCE_DIR}")
+  endif()
+
+  if(NOT EXISTS "${CMP_SOURCE_DIR}")
+    message(FATAL_ERROR "CMP_SOURCE_DIR does not exist at '${CMP_SOURCE_DIR}'")
+  endif()
+
+  # --------------------------------------------------------------------
+  # Find HDF5 Headers/Libraries
+  # HDF5 now comes with everything that is needed for CMake to load
+  # up the targets (Exported) that it needs. We just need to find where
+  # HDF5 is installed.
+  include(${CMP_SOURCE_DIR}/ExtLib/HDF5Support.cmake)
+  set(HDF5_C_TARGET_NAME hdf5::hdf5-shared)
+endif()
+target_include_directories(H5Support INTERFACE ${HDF5_INCLUDE_DIRS})
+target_link_libraries(H5Support INTERFACE ${HDF5_C_TARGET_NAME})
+
+
+#------------------------------------------------------------------------------
+# Find the Qt5 Library if needed
+#------------------------------------------------------------------------------
 if(H5Support_USE_QT)
   set(QT5_RULES COPY)
   if(H5Support_INSTALL_QT5)
     list(APPEND QT5_RULES " " INSTALL)
   endif()
   find_package(Qt5 COMPONENTS Core REQUIRED)
-  #TargetCopyInstall(${QT5_RULES} NAME "Qt5Core" TARGET Qt5::Core)
-  list(APPEND H5Support_Link_Libs Qt5::Core)
+  target_link_libraries(H5Support INTERFACE Qt5::Core)
 endif()
-
-target_link_libraries(H5Support
-  INTERFACE
-    ${H5Support_Link_Libs}
-)
 
 
 # --------------------------------------------------------------------

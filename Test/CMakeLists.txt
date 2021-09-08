@@ -78,6 +78,8 @@ target_link_libraries(H5SupportUnitTest
   PRIVATE
     H5Support::H5Support
 )
+target_include_directories(H5SupportUnitTest PRIVATE ${HDF5_INCLUDE_DIRS})
+target_link_libraries(H5SupportUnitTest PRIVATE ${HDF5_C_TARGET_NAME})
 
 add_test(NAME H5SupportUnitTest COMMAND H5SupportUnitTest)
 
