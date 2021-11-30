@@ -88,7 +88,6 @@ endif()
 #------------------------------------------------------------------------------
 # Find the HDF5 Library
 #------------------------------------------------------------------------------
-message(STATUS "==|> FINDING HDF5......")
 if(SIMPL_EMBED_PYTHON) # -- HDF5 is located in a python virtual environment
   set(HDF5_USE_STATIC_LIBRARIES OFF)
   set(HDF5_FIND_COMPONENTS OFF)
@@ -102,7 +101,7 @@ else() # -- Normal build with HDF5 found using HDF5Config.cmake
   # If the developer has set another CMP directory then use that, otherwise look
   # for the CMP directory at the same level as the SIMPL directory
   if("${CMP_SOURCE_DIR}" STREQUAL "")
-    set(CMP_SOURCE_DIR ${SIMPL_PARENT}/CMP)
+    set(CMP_SOURCE_DIR ${H5Support_SOURCE_DIR}/cmake)
     message(STATUS "CMP_SOURCE_DIR: ${CMP_SOURCE_DIR}")
   endif()
 
@@ -115,7 +114,7 @@ else() # -- Normal build with HDF5 found using HDF5Config.cmake
   # HDF5 now comes with everything that is needed for CMake to load
   # up the targets (Exported) that it needs. We just need to find where
   # HDF5 is installed.
-  include(${CMP_SOURCE_DIR}/ExtLib/HDF5Support.cmake)
+  include(${CMP_SOURCE_DIR}/HDF5Support.cmake)
   set(HDF5_C_TARGET_NAME hdf5::hdf5-shared)
 endif()
 target_include_directories(H5Support INTERFACE ${HDF5_INCLUDE_DIRS})
