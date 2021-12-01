@@ -114,7 +114,7 @@ else() # -- Normal build with HDF5 found using HDF5Config.cmake
   # HDF5 now comes with everything that is needed for CMake to load
   # up the targets (Exported) that it needs. We just need to find where
   # HDF5 is installed.
-  include(${CMP_SOURCE_DIR}/HDF5Support.cmake)
+  include(${CMP_SOURCE_DIR}/ExtLib/HDF5Support.cmake)
   set(HDF5_C_TARGET_NAME hdf5::hdf5-shared)
 endif()
 target_include_directories(H5Support INTERFACE ${HDF5_INCLUDE_DIRS})
