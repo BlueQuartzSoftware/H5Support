@@ -32,6 +32,9 @@ target_compile_features(H5Support
     cxx_std_17
 )
 
+# Force HDF5 1.10 API
+target_compile_definitions(H5Support INTERFACE "H5_USE_110_API")
+
 if(H5Support_INCLUDE_QT_API)
   target_compile_definitions(H5Support INTERFACE H5Support_USE_QT)
 endif()
