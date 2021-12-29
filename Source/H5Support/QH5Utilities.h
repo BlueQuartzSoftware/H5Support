@@ -51,10 +51,8 @@
 #include <QtCore/QString>
 #include <QtCore/QVector>
 
-#if defined(H5Support_NAMESPACE)
 namespace H5Support
 {
-#endif
 
 /**
  * @brief General Utilities for working with the HDF5 data files and API
@@ -365,6 +363,4 @@ inline QString absoluteFilePathFromFileId(hid_t fileId)
 
 }; // namespace QH5Utilities
 
-#if defined(H5Support_NAMESPACE)
-}
-#endif
+}; // namespace H5Support

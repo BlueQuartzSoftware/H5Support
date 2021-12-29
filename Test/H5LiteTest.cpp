@@ -79,9 +79,7 @@
  * getAttributeInfo - DONE
  */
 
-#if defined(H5Support_NAMESPACE)
-using namespace H5Support_NAMESPACE;
-#endif
+using namespace H5Support;
 
 class H5LiteTest
 {

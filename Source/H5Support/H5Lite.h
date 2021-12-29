@@ -57,6 +57,8 @@
  * @author Mike Jackson
  * @date April 2020
  */
+namespace H5Support
+{
 namespace H5Lite
 {
 
@@ -2858,6 +2860,4 @@ inline herr_t getDatasetInfo(hid_t locationID, const std::string& datasetName, s
 
 }; // namespace H5Lite
 
-#if defined(H5Support_NAMESPACE)
-}
-#endif
+}; // namespace H5Support

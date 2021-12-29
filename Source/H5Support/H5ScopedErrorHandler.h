@@ -39,11 +39,7 @@
 #include <hdf5.h>
 
 #include "H5Support/H5Support.h"
-
-#if defined(H5Support_NAMESPACE)
-namespace H5Support_NAMESPACE
-{
-#endif
+namespace H5Support {
 
 /**
  * @brief This class is meant to disable the normal HDF5 error handlers until the
@@ -74,6 +70,4 @@ private:
   void* _oldHDF_error_client_data;
 };
 
-#if defined(H5Support_NAMESPACE)
-}
-#endif
+}; // namespace H5Support

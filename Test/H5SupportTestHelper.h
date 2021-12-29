@@ -46,9 +46,7 @@
 
 #include "UnitTestSupport.h"
 
-#if defined(H5Support_NAMESPACE)
-using namespace H5Support_NAMESPACE;
-#endif
+using namespace H5Support;
 
 namespace H5SupportTestHelper
 {

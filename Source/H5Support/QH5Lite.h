@@ -55,11 +55,9 @@
 #include <QtCore/QString>
 #include <QtCore/QVector>
 
-#if defined(H5Support_NAMESPACE)
 namespace H5Support
 {
-#endif
-
+  
 /**
  * @brief Namespace to bring together some high level methods to read/write data to HDF5 files.
  */
@@ -841,6 +839,4 @@ inline hid_t getDatasetType(hid_t locationID, const QString& datasetName)
 
 }; // namespace QH5Lite
 
-#if defined(H5Support_NAMESPACE)
-}
-#endif
+}; // namespace H5Support

@@ -64,10 +64,7 @@
 #define HDF5_VERSION_LIB_UPPER_BOUNDS H5F_LIBVER_V18
 #endif
 
-#if defined(H5Support_NAMESPACE)
-namespace H5Support_NAMESPACE
-{
-#endif
+namespace H5Support {
 
 #define ENABLE_BITMASK_OPERATORS(x)                                                                                                                                                                    \
   template <>                                                                                                                                                                                          \
@@ -890,6 +887,4 @@ inline herr_t getAllAttributeNames(hid_t locationID, const std::string& objectNa
 
 ENABLE_BITMASK_OPERATORS(H5Utilities::CustomHDFDataTypes)
 
-#if defined(H5Support_NAMESPACE)
-}
-#endif
+}; // namespace H5Support

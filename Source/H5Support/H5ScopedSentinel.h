@@ -40,11 +40,7 @@
 #include "H5Support/H5Utilities.h"
 
 #include "H5Support/H5Support.h"
-
-#if defined(H5Support_NAMESPACE)
-namespace H5Support_NAMESPACE
-{
-#endif
+namespace H5Support {
 
 /**
  * @brief The HDF5FileSentinel class ensures the HDF5 file that is currently open
@@ -236,6 +232,4 @@ private:
   hid_t gid = -1;
 };
 
-#if defined(H5Support_NAMESPACE)
-}
-#endif
+}; // namespace H5Support

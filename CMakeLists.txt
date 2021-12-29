@@ -9,16 +9,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-project(H5Support LANGUAGES C CXX VERSION 1.0.3)
+project(H5Support LANGUAGES C CXX VERSION 1.0.4)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(H5Support_USE_MUTEX "Use mutex in functions" ON)
-option(H5Support_ENABLE_NAMESPACE "Wrap all code in namespace \"H5Support\"" OFF)
-
-set(H5Support_USER_NAMESPACE "H5Support" CACHE STRING "Namespace for H5Support")
-
 option(H5Support_INCLUDE_QT_API "Include support for using Qt classes with H5Lite" ON)
 
 #------------------------------------------------------------------------------
@@ -37,10 +33,6 @@ target_compile_definitions(H5Support INTERFACE "H5_USE_110_API")
 
 if(H5Support_INCLUDE_QT_API)
   target_compile_definitions(H5Support INTERFACE H5Support_USE_QT)
-endif()
-
-if(H5Support_ENABLE_NAMESPACE)
-  target_compile_definitions(H5Support INTERFACE H5Support_NAMESPACE=${H5Support_USER_NAMESPACE})
 endif()
 
 if(H5Support_USE_MUTEX)
