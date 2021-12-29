@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-project(H5Support LANGUAGES C CXX VERSION 1.0.0.0)
+project(H5Support LANGUAGES C CXX VERSION 1.0.3)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -148,7 +148,7 @@ endif()
 # Setup the install rules for the various platforms
 set(install_dir "bin")
 set(lib_install_dir "lib")
-set(ConfigPackageLocation share/cmake/H5Support)
+set(ConfigPackageLocation share/H5Support)
 
 if(WIN32)
   set(install_dir ".")
@@ -214,6 +214,9 @@ if(NOT H5Support_SKIP_INSTALL_FILES)
     COMPONENT
       Devel
   )
+
+  # Install the LICENSE.txt as copyright to make VCPKG happy
+  install(FILES ${H5Support_SOURCE_DIR}/LICENSE.txt DESTINATION ${ConfigPackageLocation} RENAME copyright)
 endif()
 
 
