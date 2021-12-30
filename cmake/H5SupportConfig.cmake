@@ -17,5 +17,5 @@ endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/H5SupportTargets.cmake")
 
-set(H5Support_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/../../../include")
-set(H5Support_LIB_DIRS "${CMAKE_CURRENT_LIST_DIR}/../../../lib;${CMAKE_CURRENT_LIST_DIR}/../../../bin")
+set(H5Support_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/../../include")
+set(H5Support_LIB_DIRS "${CMAKE_CURRENT_LIST_DIR}/../../lib;${CMAKE_CURRENT_LIST_DIR}/../../bin")
