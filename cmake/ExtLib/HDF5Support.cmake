@@ -140,6 +140,10 @@ if(NOT DEFINED CMP_HDF5_USE_CONFIG)
   set(CMP_HDF5_USE_CONFIG ON)
 endif()
 
+if(NOT DEFINED CMP_HDF5_ENABLE_CXX)
+  set(CMP_HDF5_ENABLE_CXX ON)
+endif()
+
 if(CMP_HDF5_USE_CONFIG)
   find_package(HDF5 NAMES hdf5 REQUIRED PATH_SUFFIXES ${hdf5_path_suffixes})
 else()
@@ -186,14 +190,18 @@ if(HDF5_FOUND)
       message(FATAL_ERROR "Neither target hdf5, hdf5-shared nor hdf5::hdf5-shared was found.")
     endif()
 
-    if(TARGET hdf5::hdf5_cpp-shared) # 1.8.17 and above
-      set(HDF5_CXX_TARGET_NAME hdf5::hdf5_cpp-shared)
-    else()
-      message(FATAL_ERROR "Neither target hdf5_cpp, hdf5_cpp-shared nor hdf5::hdf5_cpp-shared was found.")
+    if(CMP_HDF5_ENABLE_CXX)
+      if(TARGET hdf5::hdf5_cpp-shared) # 1.8.17 and above
+        set(HDF5_CXX_TARGET_NAME hdf5::hdf5_cpp-shared)
+      else()
+        message(FATAL_ERROR "Neither target hdf5_cpp, hdf5_cpp-shared nor hdf5::hdf5_cpp-shared was found.")
+      endif()
     endif()
   else()
     set(HDF5_C_TARGET_NAME hdf5::hdf5)
-    set(HDF5_CXX_TARGET_NAME hdf5::hdf5_cpp)
+    if(CMP_HDF5_ENABLE_CXX)
+      set(HDF5_CXX_TARGET_NAME hdf5::hdf5_cpp)
+    endif()
   endif()
 
   if(NOT DEFINED CMP_HDF5_ENABLE_INSTALL)
@@ -210,10 +218,12 @@ if(HDF5_FOUND)
         LIBNAME ${HDF5_C_TARGET_NAME}
         TYPES ${BUILD_TYPES}
       )
-      AddHDF5CopyRules(LIBVAR HDF5_CPP_LIB
-        LIBNAME ${HDF5_CXX_TARGET_NAME}
-        TYPES ${BUILD_TYPES}
-      )
+      if(CMP_HDF5_ENABLE_CXX)
+        AddHDF5CopyRules(LIBVAR HDF5_CPP_LIB
+          LIBNAME ${HDF5_CXX_TARGET_NAME}
+          TYPES ${BUILD_TYPES}
+        )
+      endif()
     endif()
 
     if(CMP_HDF5_ENABLE_INSTALL)
@@ -221,10 +231,12 @@ if(HDF5_FOUND)
         LIBNAME ${HDF5_C_TARGET_NAME}
         TYPES ${BUILD_TYPES}
       )
-      AddHDF5InstallRules(LIBVAR HDF5_CPP_LIB
-        LIBNAME ${HDF5_CXX_TARGET_NAME}
-        TYPES ${BUILD_TYPES}
-      )
+      if(CMP_HDF5_ENABLE_CXX)
+        AddHDF5InstallRules(LIBVAR HDF5_CPP_LIB
+          LIBNAME ${HDF5_CXX_TARGET_NAME}
+          TYPES ${BUILD_TYPES}
+        )
+      endif()
     endif()
   endif()
 
@@ -233,7 +245,9 @@ if(HDF5_FOUND)
   if(NOT APPLE AND NOT WIN32 AND NOT DREAM3D_ANACONDA)
     string(TOUPPER "${CMAKE_BUILD_TYPE}" TYPE)
     get_target_property(HDF5_C_LIB_PATH ${HDF5_C_TARGET_NAME} IMPORTED_LOCATION_${TYPE})
-    get_target_property(HDF5_CXX_LIB_PATH ${HDF5_CXX_TARGET_NAME} IMPORTED_LOCATION_${TYPE})
+    if(CMP_HDF5_ENABLE_CXX)
+      get_target_property(HDF5_CXX_LIB_PATH ${HDF5_CXX_TARGET_NAME} IMPORTED_LOCATION_${TYPE})
+    endif()
     set(HDF5_COMPONENTS ${HDF5_C_LIB_PATH} ${HDF5_CXX_LIB_PATH})
   endif()
 else(HDF5_FOUND)
