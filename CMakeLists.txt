@@ -67,6 +67,7 @@ source_group("H5Support" FILES ${H5Support_HDRS})
 target_include_directories(H5Support
   INTERFACE
     $<BUILD_INTERFACE:${H5Support_SOURCE_DIR}/Source>
+    $<INSTALL_INTERFACE:include>
 )
 
 include(${H5Support_SOURCE_DIR}/Resources/CMake/TargetCopyInstall.cmake)
