@@ -140,7 +140,7 @@ endif()
 # Setup the install rules for the various platforms
 set(install_dir "bin")
 set(lib_install_dir "lib")
-set(ConfigPackageLocation share/H5Support)
+set(H5Support_CMAKE_CONFIG_INSTALL_DIR "share/H5Support" CACHE STRING "Relative path to install H5SupportConfig.cmake in")
 
 if(WIN32)
   set(install_dir ".")
@@ -194,7 +194,7 @@ if(NOT H5Support_SKIP_INSTALL_FILES)
     NAMESPACE
       H5Support::
     DESTINATION
-      ${ConfigPackageLocation}
+      ${H5Support_CMAKE_CONFIG_INSTALL_DIR}
   )
 
   install(
@@ -202,13 +202,13 @@ if(NOT H5Support_SKIP_INSTALL_FILES)
       "${CMAKE_CURRENT_BINARY_DIR}/H5SupportConfig.cmake"
       "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}TargetsConfigVersion.cmake"
     DESTINATION
-      ${ConfigPackageLocation}
+      ${H5Support_CMAKE_CONFIG_INSTALL_DIR}
     COMPONENT
       Devel
   )
 
   # Install the LICENSE.txt as copyright to make VCPKG happy
-  install(FILES ${H5Support_SOURCE_DIR}/LICENSE.txt DESTINATION ${ConfigPackageLocation} RENAME copyright)
+  install(FILES ${H5Support_SOURCE_DIR}/LICENSE.txt DESTINATION ${H5Support_CMAKE_CONFIG_INSTALL_DIR} RENAME copyright)
 endif()
 
 
