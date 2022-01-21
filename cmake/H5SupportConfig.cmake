@@ -16,7 +16,7 @@ if(@H5Support_INCLUDE_QT_API@)
 endif()
 
 include(CMakeFindDependencyMacro)
-find_dependency(HDF5 NAMES hdf5 REQUIRED)
+find_dependency(HDF5 NAMES hdf5)
 
 include("${CMAKE_CURRENT_LIST_DIR}/H5SupportTargets.cmake")
 
