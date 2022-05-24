@@ -556,13 +556,8 @@ inline herr_t findAttribute(hid_t locationID, const std::string& attributeName)
 {
   H5SUPPORT_MUTEX_LOCK()
 
-  hsize_t attributeNum;
-  herr_t returnError = 0;
-
-  attributeNum = 0;
-  returnError = H5Aiterate(locationID, H5_INDEX_NAME, H5_ITER_INC, &attributeNum, find_attr, const_cast<char*>(attributeName.c_str()));
-
-  return returnError;
+  hsize_t attributeNum = 0;
+  return H5Aiterate(locationID, H5_INDEX_NAME, H5_ITER_INC, &attributeNum, find_attr, const_cast<char*>(attributeName.c_str()));
 }
 
 /**
@@ -595,10 +590,6 @@ template <typename T>
 inline herr_t writePointerDataset(hid_t locationID, const std::string& datasetName, int32_t rank, const hsize_t* dims, const T* data)
 {
   H5SUPPORT_MUTEX_LOCK()
-
-  herr_t error = -1;
-  hid_t datasetID = -1;
-  hid_t dataspaceID = -1;
   herr_t returnError = 0;
 
   if(nullptr == data)
@@ -611,17 +602,17 @@ inline herr_t writePointerDataset(hid_t locationID, const std::string& datasetNa
     return -1;
   }
   // Create the DataSpace
-  dataspaceID = H5Screate_simple(rank, dims, nullptr);
+  hid_t dataspaceID = H5Screate_simple(rank, dims, nullptr);
   if(dataspaceID < 0)
   {
     return static_cast<herr_t>(dataspaceID);
   }
   // Create the Dataset
   // This will fail if datasetName contains a "/"!
-  datasetID = H5Dcreate(locationID, datasetName.c_str(), dataType, dataspaceID, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  hid_t datasetID = H5Dcreate(locationID, datasetName.c_str(), dataType, dataspaceID, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
   if(datasetID >= 0)
   {
-    error = H5Dwrite(datasetID, dataType, H5S_ALL, H5S_ALL, H5P_DEFAULT, data);
+    herr_t error = H5Dwrite(datasetID, dataType, H5S_ALL, H5S_ALL, H5P_DEFAULT, data);
     if(error < 0)
     {
       std::cout << "Error Writing Data '" << datasetName << "'" << std::endl;
@@ -649,7 +640,7 @@ inline herr_t writePointerDataset(hid_t locationID, const std::string& datasetNa
     returnError = static_cast<herr_t>(datasetID);
   }
   /* Terminate access to the data space. */
-  error = H5Sclose(dataspaceID);
+  herr_t error = H5Sclose(dataspaceID);
   if(error < 0)
   {
     std::cout << "Error Closing Dataspace" << std::endl;
@@ -672,9 +663,6 @@ inline herr_t replacePointerDataset(hid_t locationID, const std::string& dataset
 {
   H5SUPPORT_MUTEX_LOCK()
 
-  herr_t error = -1;
-  hid_t datasetID = -1;
-  hid_t dataspaceID = -1;
   herr_t returnError = 0;
 
   if(data == nullptr)
@@ -688,14 +676,14 @@ inline herr_t replacePointerDataset(hid_t locationID, const std::string& dataset
     return -1;
   }
   // Create the DataSpace
-  dataspaceID = H5Screate_simple(rank, dims, nullptr);
+  hid_t dataspaceID = H5Screate_simple(rank, dims, nullptr);
   if(dataspaceID < 0)
   {
     return dataspaceID;
   }
 
   HDF_ERROR_HANDLER_OFF
-  datasetID = H5Dopen(locationID, datasetName.c_str(), H5P_DEFAULT);
+  hid_t datasetID = H5Dopen(locationID, datasetName.c_str(), H5P_DEFAULT);
   HDF_ERROR_HANDLER_ON
   if(datasetID < 0) // dataset does not exist so create it
   {
@@ -703,7 +691,7 @@ inline herr_t replacePointerDataset(hid_t locationID, const std::string& dataset
   }
   if(datasetID >= 0)
   {
-    error = H5Dwrite(datasetID, dataType, H5S_ALL, H5S_ALL, H5P_DEFAULT, data);
+    herr_t error = H5Dwrite(datasetID, dataType, H5S_ALL, H5S_ALL, H5P_DEFAULT, data);
     if(error < 0)
     {
       std::cout << "Error Writing Data" << std::endl;
@@ -721,7 +709,7 @@ inline herr_t replacePointerDataset(hid_t locationID, const std::string& dataset
     returnError = static_cast<herr_t>(datasetID);
   }
   /* Terminate access to the data space. */
-  error = H5Sclose(dataspaceID);
+  herr_t error = H5Sclose(dataspaceID);
   if(error < 0)
   {
     std::cout << "Error Closing Dataspace" << std::endl;
@@ -789,19 +777,16 @@ inline std::vector<hsize_t> guessChunkSize(const std::vector<hsize_t>& dims, siz
     hsize_t chunkBytes = product * typeSize;
     if(chunkBytes < targetSize)
     {
-      foundChunkSize = true;
       break;
     }
 
     if(chunkBytes < detail::k_ChunkMax && static_cast<double>(chunkBytes - targetSize) / static_cast<double>(targetSize) < 0.5)
     {
-      foundChunkSize = true;
       break;
     }
 
     if(product == 1)
     {
-      foundChunkSize = true;
       break;
     }
 
@@ -1007,9 +992,6 @@ inline herr_t writeScalarDataset(hid_t locationID, const std::string& datasetNam
 {
   H5SUPPORT_MUTEX_LOCK()
 
-  herr_t error = -1;
-  hid_t datasetID = -1;
-  hid_t dataspaceID = -1;
   herr_t returnError = 0;
   hsize_t dims = 1;
   hid_t rank = 1;
@@ -1019,16 +1001,16 @@ inline herr_t writeScalarDataset(hid_t locationID, const std::string& datasetNam
     return -1;
   }
   // Create the DataSpace
-  dataspaceID = H5Screate_simple(static_cast<int>(rank), &(dims), nullptr);
+  hid_t dataspaceID = H5Screate_simple(static_cast<int>(rank), &(dims), nullptr);
   if(dataspaceID < 0)
   {
     return static_cast<herr_t>(dataspaceID);
   }
   // Create the Dataset
-  datasetID = H5Dcreate(locationID, datasetName.c_str(), dataType, dataspaceID, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  hid_t datasetID = H5Dcreate(locationID, datasetName.c_str(), dataType, dataspaceID, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
   if(datasetID >= 0)
   {
-    error = H5Dwrite(datasetID, dataType, H5S_ALL, H5S_ALL, H5P_DEFAULT, &value);
+    herr_t error = H5Dwrite(datasetID, dataType, H5S_ALL, H5S_ALL, H5P_DEFAULT, &value);
     if(error < 0)
     {
       std::cout << "Error Writing Data" << std::endl;
@@ -1046,7 +1028,7 @@ inline herr_t writeScalarDataset(hid_t locationID, const std::string& datasetNam
     returnError = static_cast<herr_t>(datasetID);
   }
   /* Terminate access to the data space. */
-  error = H5Sclose(dataspaceID);
+  herr_t error = H5Sclose(dataspaceID);
   if(error < 0)
   {
     std::cout << "Error Closing Dataspace" << std::endl;
@@ -1066,27 +1048,24 @@ inline herr_t writeStringDataset(hid_t locationID, const std::string& datasetNam
 {
   H5SUPPORT_MUTEX_LOCK()
 
-  hid_t datasetID = -1;
-  hid_t dataspaceID = -1;
-  hid_t typeID = -1;
-  size_t size = 0;
-  herr_t error = -1;
   herr_t returnError = 0;
+  hid_t typeID = H5Tcopy(H5T_C_S1);
 
   /* create a string data type */
-  if((typeID = H5Tcopy(H5T_C_S1)) >= 0)
+  if(typeID >= 0)
   {
-    size = data.size() + 1;
+    size_t size = data.size() + 1;
     if(H5Tset_size(typeID, size) >= 0)
     {
       if(H5Tset_strpad(typeID, H5T_STR_NULLTERM) >= 0)
       {
         /* Create the data space for the dataset. */
-        if((dataspaceID = H5Screate(H5S_SCALAR)) >= 0)
+        hid_t dataspaceID = H5Screate(H5S_SCALAR);
+        if(dataspaceID >= 0)
         {
           /* Create or open the dataset. */
           HDF_ERROR_HANDLER_OFF
-          datasetID = H5Dopen(locationID, datasetName.c_str(), H5P_DEFAULT);
+          hid_t datasetID = H5Dopen(locationID, datasetName.c_str(), H5P_DEFAULT);
           HDF_ERROR_HANDLER_ON
           if(datasetID < 0) // dataset does not exist so create it
           {
@@ -1097,7 +1076,7 @@ inline herr_t writeStringDataset(hid_t locationID, const std::string& datasetNam
           {
             if(!data.empty())
             {
-              error = H5Dwrite(datasetID, typeID, H5S_ALL, H5S_ALL, H5P_DEFAULT, data.c_str());
+              herr_t error = H5Dwrite(datasetID, typeID, H5S_ALL, H5S_ALL, H5P_DEFAULT, data.c_str());
               if(error < 0)
               {
                 std::cout << "Error Writing String Data" << std::endl;
@@ -1224,17 +1203,17 @@ inline herr_t writeVectorOfStringsDataset(hid_t locationID, const std::string& d
       if((datasetID = H5Dcreate(locationID, datasetName.c_str(), datatype, dataspaceID, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT)) >= 0)
       {
         // Select the "memory" to be written out - just 1 record.
-        hsize_t offset[] = {0};
-        hsize_t count[] = {1};
-        H5Sselect_hyperslab(memSpace, H5S_SELECT_SET, offset, nullptr, count, nullptr);
+        hsize_t dataset_offset[] = {0};
+        hsize_t dataset_count[] = {1};
+        H5Sselect_hyperslab(memSpace, H5S_SELECT_SET, dataset_offset, nullptr, dataset_count, nullptr);
         hsize_t pos = 0;
         for(const auto& element : data)
         {
           // Select the file position, 1 record at position 'pos'
-          hsize_t count[] = {1};
-          hsize_t offset[] = {pos};
+          hsize_t element_count[] = {1};
+          hsize_t element_offset[] = {pos};
           pos++;
-          H5Sselect_hyperslab(dataspaceID, H5S_SELECT_SET, offset, nullptr, count, nullptr);
+          H5Sselect_hyperslab(dataspaceID, H5S_SELECT_SET, element_offset, nullptr, element_count, nullptr);
           const char* strPtr = element.c_str();
           error = H5Dwrite(datasetID, datatype, memSpace, dataspaceID, H5P_DEFAULT, &strPtr);
           if(error < 0)
