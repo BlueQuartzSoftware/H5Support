@@ -42,40 +42,40 @@
 #include "H5Support/H5Support.h"
 
 #define CloseH5A(attributeID, error, returnError)                                                                                                                                                      \
-  error = H5Aclose(attributeID);                                                                                                                                                                       \
-  if(error < 0)                                                                                                                                                                                        \
+  { herr_t close##error = H5Aclose(attributeID);                                                                                                                                                                       \
+  if(close##error < 0)                                                                                                                                                                                        \
   {                                                                                                                                                                                                    \
     std::cout << "File: " << __FILE__ << "(" << __LINE__ << "): "                                                                                                                                      \
               << "Error Closing Attribute." << std::endl;                                                                                                                                              \
-    returnError = error;                                                                                                                                                                               \
-  }
+    returnError = close##error;                                                                                                                                                                               \
+  }}
 
 #define CloseH5D(datasetID, error, returnError, datasetName)                                                                                                                                           \
-  error = H5Dclose(datasetID);                                                                                                                                                                         \
-  if(error < 0)                                                                                                                                                                                        \
+  {herr_t close##error = H5Dclose(datasetID);                                                                                                                                                                         \
+  if(close##error < 0)                                                                                                                                                                                        \
   {                                                                                                                                                                                                    \
     std::cout << "File: " << __FILE__ << "(" << __LINE__ << "): "                                                                                                                                      \
               << "Error Closing Dataset: " << datasetName << " datasetID=" << datasetID << " retError=" << returnError << std::endl;                                                                   \
-    returnError = error;                                                                                                                                                                               \
-  }
+    returnError = close##error;                                                                                                                                                                               \
+  }}
 
 #define CloseH5S(dataspaceID, error, returnError)                                                                                                                                                      \
-  error = H5Sclose(dataspaceID);                                                                                                                                                                       \
-  if(error < 0)                                                                                                                                                                                        \
+  {herr_t close##error = H5Sclose(dataspaceID);                                                                                                                                                                       \
+  if(close##error < 0)                                                                                                                                                                                        \
   {                                                                                                                                                                                                    \
     std::cout << "File: " << __FILE__ << "(" << __LINE__ << "): "                                                                                                                                      \
               << "Error closing Dataspace." << std::endl;                                                                                                                                              \
-    returnError = error;                                                                                                                                                                               \
-  }
+    returnError = close##error;                                                                                                                                                                               \
+  }}
 
 #define CloseH5T(typeID, error, returnError)                                                                                                                                                           \
-  error = H5Tclose(typeID);                                                                                                                                                                            \
-  if(error < 0)                                                                                                                                                                                        \
+  { herr_t close##error = H5Tclose(typeID);                                                                                                                                                                            \
+  if(close##error < 0)                                                                                                                                                                                        \
   {                                                                                                                                                                                                    \
     std::cout << "File: " << __FILE__ << "(" << __LINE__ << "): "                                                                                                                                      \
               << "Error closing DataType" << std::endl;                                                                                                                                                \
-    returnError = error;                                                                                                                                                                               \
-  }
+    returnError = close##error;                                                                                                                                                                               \
+  }}
 
 #define HDF_ERROR_HANDLER_OFF                                                                                                                                                                          \
   herr_t (*_oldHDF_error_func)(hid_t, void*);                                                                                                                                                          \
