@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-project(H5Support LANGUAGES C CXX VERSION 1.0.7)
+project(H5Support LANGUAGES C CXX VERSION 1.0.8)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -113,7 +113,7 @@ else() # -- Normal build with HDF5 found using HDF5Config.cmake
   include(${CMP_SOURCE_DIR}/ExtLib/HDF5Support.cmake)
   set(HDF5_C_TARGET_NAME hdf5::hdf5-shared)
 endif()
-target_include_directories(H5Support INTERFACE ${HDF5_INCLUDE_DIRS})
+target_include_directories(H5Support INTERFACE ${HDF5_INCLUDE_DIR})
 target_link_libraries(H5Support INTERFACE ${HDF5_C_TARGET_NAME})
 
 
