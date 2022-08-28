@@ -1505,7 +1505,6 @@ inline hsize_t getNumberOfElements(hid_t locationID, const std::string& datasetN
 
   hid_t datasetID;
   herr_t error = 0;
-  herr_t returnError = 0;
   hid_t dataspaceID;
   hsize_t numElements = 0;
   datasetID = H5Dopen(locationID, datasetName.c_str(), H5P_DEFAULT);
@@ -1530,19 +1529,16 @@ inline hsize_t getNumberOfElements(hid_t locationID, const std::string& datasetN
       if(error < 0)
       {
         std::cout << "Error Closing Data Space" << std::endl;
-        returnError = error;
       }
     }
     else
     {
       std::cout << "Error Opening SpaceID" << std::endl;
-      // returnError = dataspaceID;
     }
     error = H5Dclose(datasetID);
     if(error < 0)
     {
       std::cout << "Error Closing Dataset" << std::endl;
-      returnError = error;
     }
   }
   return numElements;
