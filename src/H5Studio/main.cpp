@@ -20,7 +20,7 @@
 #include "QHDFViewerApplication.h"
 
 
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 
 // -----------------------------------------------------------------------------

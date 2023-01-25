@@ -13,7 +13,7 @@
 
 //-- Qt Includes
 #include <QtCore/QObject>
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 //-- UIC generated Header
 #include <ui_QHDFGroupPropertiesWindow.h>

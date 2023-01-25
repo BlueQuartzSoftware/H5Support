@@ -1,9 +1,9 @@
 
 #include "ImageDataToolbar.h"
 
-#include <QtGui/QMainWindow>
-#include <QtGui/QToolBar>
-#include <QtGui/QAction>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QAction>
 
 
 ImageDataToolbar::ImageDataToolbar(QMainWindow* parent) :

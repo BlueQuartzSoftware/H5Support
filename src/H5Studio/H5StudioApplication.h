@@ -34,7 +34,7 @@
 //-- Qt Headers
 #include <QtCore/QObject>
 #include <QtCore/QEvent>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtGui/QFileOpenEvent>
 
 

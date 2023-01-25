@@ -8,8 +8,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "QDockUtilities.h"
 
-#include <QtGui/QDockWidget>
-#include <QtGui/QDesktopWidget>
+#include <QtWidgets/QDockWidget>
+#include <QtWidgets/QDesktopWidget>
 
 QDockUtilities::QDockUtilities()
 {

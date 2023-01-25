@@ -36,7 +36,7 @@
 
 #include "QHDFPropertiesWindow.h"
 
-#include <QtGui/QHeaderView>
+#include <QtWidgets/QHeaderView>
 
 //--
 #include "H5Support/H5Lite.h"

@@ -10,8 +10,8 @@
 #define QHDF_IMAGE_DATA_WINDOW_H_
 
 //-- Qt Includes
-#include <QtGui/QWidget>
-#include <QtGui/QMainWindow>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QMainWindow>
 
 #include <hdf5.h>
 
