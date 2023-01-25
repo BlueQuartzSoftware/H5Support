@@ -1,0 +1,42 @@
+# -- These are DREAM3D Plugins that need to be installed
+set(COMPLEX_PLUGINS @COMPLEX_PLUGINS@)
+set(bundle_plugins "")
+
+
+# -- Loop on each DREAM3D Plugin to make it is fixed up
+foreach(plugin ${COMPLEX_PLUGINS})
+  message(STATUS "Copying Plugin ${plugin} into ${CMAKE_INSTALL_PREFIX}")
+  file(COPY ${plugin} DESTINATION "${CMAKE_INSTALL_PREFIX}")
+  get_filename_component(d3d_plugin_name "${plugin}" NAME)
+  list(APPEND bundle_plugins ${CMAKE_INSTALL_PREFIX}/${d3d_plugin_name})
+endforeach(plugin $COMPLEX_PLUGINS)
+
+
+
+# -----------------------------------------------------------------------
+# Read up all the library directories where we can find all the external libraries.
+# -----------------------------------------------------------------------
+set(lib_search_dirs "@lib_search_dirs@;@COMPLEX_EXTRA_LIBRARY_DIRS@")
+
+# -----------------------------------------------------------------------
+# This is where the actual patching of the install_names is going to take place.
+# -----------------------------------------------------------------------
+include(BundleUtilities)
+fixup_bundle("${CMAKE_INSTALL_PREFIX}/@QAB_TARGET@.exe"
+             # Plugins to Install
+             "${bundle_plugins}"
+             # Directories to Search for Libraries
+             "${lib_search_dirs}")
+
+# -----------------------------------------------------------------------
+# Final Clean up of installation
+# This is ONLY viable on Windows as there is no common installation. Unless
+# someone makes a VCPKG out of DREAM3DNX or, of course, creates an Anaconda
+# installation, at which point, we would probably nuke most of the conda
+# virtual environment.
+# -----------------------------------------------------------------------
+if("@DREAM3DNX_ANACONDA_INSTALL@" STREQUAL "OFF")
+  file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/bin")
+  file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/lib")
+  file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/include")
+endif()

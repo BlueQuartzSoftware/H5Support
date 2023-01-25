@@ -1,0 +1,238 @@
+# -----------------------------------------------------------------------------------
+# This file was auto generated from the template file "DREAM3DNX/cmake/Linux_Tools/CompleteBundle.cmake.in", 
+# if you need to change something in here, change that file instead
+# -----------------------------------------------------------------------------------
+message (STATUS "##################################################################")
+message (STATUS "")
+message (STATUS "#------------ Starting Linux Fixup @linux_app_name@---------------")
+message (STATUS "")
+message (STATUS "##################################################################")
+
+
+include (CMakeParseArguments)
+
+#-- Need this for link line stuff?
+if(COMMAND cmake_policy)
+  cmake_policy(SET CMP0009 NEW)
+  cmake_policy(SET CMP0011 NEW)
+endif(COMMAND cmake_policy)
+
+# -----------------------------------------------------------------------------------
+# gp_resolved_file_type_override
+#
+# Return the type of resolved file as local/system/other/embedded
+#
+# This is here (for the linux packaging) because logic somewhere in the
+# cmake code figures out that a relative path to a library, even though that
+# library is in the installation directory structure is consided 'other' which
+# then does not allow the validation to pass
+#
+function(gp_resolved_file_type_override resolved_file type_var)
+    set(path "${CMAKE_INSTALL_PREFIX}/lib")
+    get_filename_component(prereq_filename ${resolved_file} NAME)
+
+    if(EXISTS "${path}/${prereq_filename}")
+        set(${type_var} "local" PARENT_SCOPE)
+    endif()
+
+endfunction()
+
+
+# -----------------------------------------------------------------------------------
+# gp_item_default_embedded_path item default_embedded_path_var
+#
+# Return the path that others should refer to the item by when the item
+# is embedded inside a bundle.
+#
+# Override on a per-project basis by providing a project-specific
+# gp_item_default_embedded_path_override function.
+#
+function(gp_item_default_embedded_path_override item default_embedded_path_var)
+  #
+  # The assumption here is that the installation is a typical 'gnu' style of
+  # installation directory structure
+  #
+
+  # By default, embed libraries in the lib folder:
+  #
+  set(path "${CMAKE_INSTALL_PREFIX}/lib")
+  #message(STATUS "%%%=> item: ${item}")
+  #message(STATUS "%%%=> default_embedded_path_var: ${default_embedded_path_var}")
+
+  set(overridden 0)
+  # For Qt Based Plugins image formats, the Plugins MUST reside in
+  # the "Plugins/imageformats" directory. Since THIS particular project ONLY has
+  # the Qt Frameworks AND the Plugins the below regex will suffice to separate
+  # them from each other. On other projects we could use better logic to
+  # put things where they go. Maybe using some "configured" CMake List of libraries
+  # then looking through each list for the correct library being fixed up.
+  #
+
+  # First look for plain libraries
+  if(item MATCHES "\\.so$")
+    # message(STATUS "%%%%%%%=> LIBRARY: ${item}")
+    set(path "${CMAKE_INSTALL_PREFIX}/lib")
+    set(overridden 1)
+  elseif(item MATCHES "\\.complex$") # Then look for actual COMPLEX plugins
+    # message(STATUS "=======> %% COMPLEX PLUGIN: ${item}")
+    set(path "${CMAKE_INSTALL_PREFIX}/Plugins")
+    set(overridden 1)
+  endif()
+
+  set(${default_embedded_path_var} "${path}" PARENT_SCOPE)
+endfunction()
+
+
+# -----------------------------------------------------------------------------------
+# Script starts here ...
+# -----------------------------------------------------------------------------------
+
+set(executable_name @linux_app_name@)
+set(BUILD_TYPE "${CMAKE_BUILD_TYPE}")
+if("${BUILD_TYPE}" STREQUAL "Debug")
+  set(executable_name @linux_app_name@)
+endif()
+
+# -----------------------------------------------------------------------------------
+# -- These are COMPLEX Plugins that need to be installed
+set(COMPLEX_PLUGINS @COMPLEX_PLUGINS@)
+set(d3d_Plugins "")
+
+
+# -----------------------------------------------------------------------------------
+# -- Loop on each COMPLEX Plugin to make sure it is fixed up with proper RAPTH
+file(MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/lib")
+foreach(plugin ${COMPLEX_PLUGINS})
+  message(STATUS "Copying COMPLEX Plugin ${plugin} into ${CMAKE_INSTALL_PREFIX}/Plugins")
+  file(COPY ${plugin} DESTINATION "${CMAKE_INSTALL_PREFIX}/Plugins")
+  get_filename_component(d3d_plugin_name "${plugin}" NAME)
+  list(APPEND d3d_Plugins ${CMAKE_INSTALL_PREFIX}/Plugins/${d3d_plugin_name})
+  file(CREATE_LINK "${CMAKE_INSTALL_PREFIX}/Plugins/${d3d_plugin_name}" "${CMAKE_INSTALL_PREFIX}/lib/${d3d_plugin_name}" )
+endforeach(plugin $COMPLEX_PLUGINS)
+
+#-----------------------------------------------------------------------------------
+# This function will copy a Qt based plugin from its directory in the Qt installation
+# into the application installation directory structure
+# QT5_PLUGIN_DIR The Absolute path to the Plugins directory of the Qt5 installation
+# PLUGIN_GROUP The name of the folder from which we want to copy a plugin file
+# PLUGIN_NAME The name of the plugin library file (Full name including extension)
+function(CopyQt5Plugin)
+  set(options )
+  set(oneValueArgs QT5_PLUGIN_DIR PLUGIN_GROUP PLUGIN_NAME)
+  set(multiValueArgs )
+  cmake_parse_arguments(P "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
+  set(ORIG_PLUGIN "${P_QT5_PLUGIN_DIR}/${P_PLUGIN_GROUP}/${P_PLUGIN_NAME}")
+  message(STATUS "Copying Qt Plugin ${P_QT5_PLUGIN_DIR}/${P_PLUGIN_GROUP}/${P_PLUGIN_NAME} into ${CMAKE_INSTALL_PREFIX}/Plugins/${P_PLUGIN_GROUP}/")
+  file(COPY "${ORIG_PLUGIN}" DESTINATION "${CMAKE_INSTALL_PREFIX}/Plugins/${P_PLUGIN_GROUP}")
+  set(d3d_qt_Plugins "${d3d_qt_Plugins};${CMAKE_INSTALL_PREFIX}/Plugins/${P_PLUGIN_GROUP}/${P_PLUGIN_NAME}" PARENT_SCOPE)
+endfunction()
+
+#-----------------------------------------------------------------------------------
+# Get the path to the Qt Plugins directory using QMake
+execute_process(
+  COMMAND "@QtQMake_location@" -query QT_INSTALL_PLUGINS
+  OUTPUT_VARIABLE qtPluginsPath
+  OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_STRIP_TRAILING_WHITESPACE
+)
+
+# This gets populated from the 'configure_file' stage of cmake
+set(Qt5_MODULES "@QAB_QT5_MODULES@")
+
+# If we link against Qt5Gui then we need these plugins on LInux
+list(FIND Qt5_MODULES "Gui" moduleFound)
+if(moduleFound GREATER -1)
+  CopyQt5Plugin(QT5_PLUGIN_DIR "${qtPluginsPath}" PLUGIN_GROUP "printsupport" PLUGIN_NAME "libcupsprintersupport.so")
+  CopyQt5Plugin(QT5_PLUGIN_DIR "${qtPluginsPath}" PLUGIN_GROUP "bearer" PLUGIN_NAME "libqgenericbearer.so")
+endif()
+
+# We are going to grab ALL the platform Plugins, do not copy any debug libraries
+set(qt_plugin_dir_name "platforms")
+file(GLOB qt_plugins "${qtPluginsPath}/${qt_plugin_dir_name}/*.so")
+foreach(qt_plugin ${qt_plugins})
+  string(FIND "${qt_plugin}" ".debug" FOUND)
+  if(FOUND EQUAL -1)
+    # This is a non _debug version of the so and we want it included in our package
+    get_filename_component(qt_plugin "${qt_plugin}" NAME)
+    CopyQt5Plugin(QT5_PLUGIN_DIR "${qtPluginsPath}" PLUGIN_GROUP "${qt_plugin_dir_name}" PLUGIN_NAME ${qt_plugin})
+  endif()
+endforeach()
+
+# We are going to grab ALL the xcbintegrations Plugins
+set(qt_plugin_dir_name "xcbglintegrations")
+file(GLOB qt_plugins "${qtPluginsPath}/${qt_plugin_dir_name}/*.so")
+foreach(qt_plugin ${qt_plugins})
+  string(FIND "${qt_plugin}" ".debug" FOUND)
+  if(FOUND EQUAL -1)
+    # This is a non _debug version of the so and we want it included in our package
+    get_filename_component(qt_plugin "${qt_plugin}" NAME)
+    CopyQt5Plugin(QT5_PLUGIN_DIR "${qtPluginsPath}" PLUGIN_GROUP "${qt_plugin_dir_name}" PLUGIN_NAME ${qt_plugin})
+  endif()
+endforeach()
+
+# We are going to grab ALL the platformthemes Plugins
+set(qt_plugin_dir_name "platformthemes")
+file(GLOB qt_plugins "${qtPluginsPath}/${qt_plugin_dir_name}/*.so")
+foreach(qt_plugin ${qt_plugins})
+  string(FIND "${qt_plugin}" ".debug" FOUND)
+  if(FOUND EQUAL -1)
+    # This is a non _debug version of the so and we want it included in our package
+    get_filename_component(qt_plugin "${qt_plugin}" NAME)
+    CopyQt5Plugin(QT5_PLUGIN_DIR "${qtPluginsPath}" PLUGIN_GROUP "${qt_plugin_dir_name}" PLUGIN_NAME ${qt_plugin})
+  endif()
+endforeach()
+
+
+# We are going to grab ALL the image Plugins
+file(GLOB qt_plugins "${qtPluginsPath}/imageformats/*.so")
+# Now loop over each ImageFormat plugin copying it into the app bundle ONLY if it is NOT the debug version
+foreach(qt_plugin ${qt_plugins})
+  string(FIND "${qt_plugin}" "_debug" FOUND)
+  if(FOUND EQUAL -1)
+    # This is a non _debug version of the so and we want it included in our package
+    get_filename_component(qt_plugin "${qt_plugin}" NAME)
+    CopyQt5Plugin(QT5_PLUGIN_DIR "${qtPluginsPath}" PLUGIN_GROUP "imageformats" PLUGIN_NAME ${qt_plugin})
+  endif()
+endforeach()
+
+# -----------------------------------------------------------------------
+# Query QMake to find the location of the Qt libraries.
+# -----------------------------------------------------------------------
+execute_process(
+  COMMAND "@QtQMake_location@" -query QT_INSTALL_LIBS
+  OUTPUT_VARIABLE qtLibDir
+  OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_STRIP_TRAILING_WHITESPACE
+)
+
+# ----------------------------------------------------
+# Create a qt.conf file in the app bundle
+# -----------------------------------------------------------------------
+file(WRITE "${CMAKE_INSTALL_PREFIX}/bin/qt.conf")
+file(APPEND "${CMAKE_INSTALL_PREFIX}/bin/qt.conf" "[Paths]\nPlugins = ../Plugins\n")
+file(APPEND "${CMAKE_INSTALL_PREFIX}/bin/qt.conf" "Prefix = .\n")
+file(APPEND "${CMAKE_INSTALL_PREFIX}/bin/qt.conf" "LibraryExecutables = bin\n")
+
+# -----------------------------------------------------------------------
+# Set all the directories that we are going to search for libraries
+# -----------------------------------------------------------------------
+set(lib_search_dirs "@lib_search_dirs@;@COMPLEX_EXTRA_LIBRARY_DIRS@")
+
+# ----------------------------------------------------
+# This is where the actual patching of the RPATH is going to take place.
+# -----------------------------------------------------------------------
+include(BundleUtilities)
+fixup_bundle("${CMAKE_INSTALL_PREFIX}/bin/${executable_name}"
+             # Plugins to Install
+             "${d3d_Plugins};${d3d_qt_Plugins}"
+             # Directories to Search for Libraries
+             "${lib_search_dirs};${qtLibDir}")
+
+# -----------------------------------------------------------------------
+# QtAdvancedDockingSystem installs its headers by default.
+# -----------------------------------------------------------------------           
+file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/include")
+
+# -----------------------------------------------------------------------
+# Move the QtAdvancedDockingSystem license folder inside the .app package
+# -----------------------------------------------------------------------
+file(RENAME  "${CMAKE_INSTALL_PREFIX}/license" "${CMAKE_INSTALL_PREFIX}/bin/license")
