@@ -9,12 +9,33 @@ PROJECT (H5StudioProj
   LANGUAGES CXX
 )
 
+# ---------- Setup output Directories -------------------------
+if(NOT DEFINED CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY
+    ${H5StudioProj_BINARY_DIR}/Bin
+    CACHE PATH
+    "Single Directory for all Libraries"
+  )
+endif()
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${H5StudioProj_BIN_DIR} CACHE PATH "Single Directory for all Libraries")
+# --------- Setup the Executable output Directory -------------
+if(NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+    ${H5StudioProj_BINARY_DIR}/Bin
+    CACHE PATH
+    "Single Directory for all Executables."
+  )
+endif()
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${H5StudioProj_BIN_DIR} CACHE PATH "Single Directory for all Executables.")
+# --------- Setup the Executable output Directory -------------
+if(NOT DEFINED CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+    ${H5StudioProj_BINARY_DIR}/Bin
+    CACHE PATH
+    "Single Directory for all static libraries."
+  )
+endif()
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${H5StudioProj_BIN_DIR} CACHE PATH "Single Directory for all static libraries.")
 
 list(APPEND CMAKE_MODULE_PATH ${H5StudioProj_SOURCE_DIR}/cmake)
 
@@ -40,5 +61,7 @@ set(AUTOMOC_SOURCE_GROUP "Generated/moc")
 # Find HDF5
 # ------------------------------------------------------------------------------
 find_package(HDF5 REQUIRED)
+
+add_subdirectory(${H5StudioProj_SOURCE_DIR}/3rdParty/H5Support)
 
 add_subdirectory(${H5StudioProj_SOURCE_DIR}/src/H5Studio)

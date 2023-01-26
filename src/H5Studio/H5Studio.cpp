@@ -4,6 +4,7 @@
 #include <iostream>
 
 //-- Qt Includes
+#include <QtCore/QMimeData>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QtCore/QString>
@@ -22,6 +23,7 @@
 #include <QtWidgets/QDockWidget>
 
 
+
 //-- H5 Support
 #include "H5Support/H5Lite.h"
 #include "H5Support/H5Utilities.h"
@@ -38,10 +40,6 @@
 #include "ImageDataToolbar.h"
 #include "QDockUtilities.h"
 #include "QRecentFileList.h"
-
-
-#include "DREAM3DLib/Common/IDataArray.h"
-
 
 
 // -----------------------------------------------------------------------------
@@ -65,7 +63,7 @@ H5Studio::H5Studio(QWidget *parent) :
   QRecentFileList* recentFileList = QRecentFileList::instance();
   connect(recentFileList, SIGNAL (fileListChanged(const QString &)), this, SLOT(updateRecentFileList(const QString &)) );
   // Get out initial Recent File List
-  this->updateRecentFileList(QString::null);
+  this->updateRecentFileList(QString());
 
 }
 
@@ -353,7 +351,7 @@ void H5Studio::on_actionShow_Properties_triggered()
   // std::cout << "Path is: " << path.toStdString() << std::endl;
 
   std::string datasetPath = path.toStdString();
-  bool isGroup = H5Utilities::isGroup(this->_fileId, datasetPath);
+  bool isGroup = H5Support::H5Utilities::isGroup(this->_fileId, datasetPath);
   if (true == isGroup)
   {
     QHDFGroupPropertiesWindow* propDialog = new QHDFGroupPropertiesWindow(this->_fileId, path, this);
@@ -443,7 +441,7 @@ void H5Studio::initWithFile(const QString &hdfFile)
   this->_openDialogLastDirectory = fileInfo.path();
   _currentOpenFile = hdfFile;
 
-  _fileId = H5Utilities::openFile(hdfFile.toStdString(), true);
+  _fileId = H5Support::H5Utilities::openFile(hdfFile.toStdString(), true);
   if (_fileId < 0)
   {
     std::cout << "Error Reading HDF5 file: " << hdfFile.toStdString() << std::endl;
@@ -524,7 +522,7 @@ void H5Studio::hdfTreeView_currentChanged(const QModelIndex & current, const QMo
 herr_t H5Studio::updateGeneralTable(const QString &path)
 {
   std::string datasetPath = path.toStdString();
-  std::string objName = H5Utilities::extractObjectName(datasetPath);
+  std::string objName = H5Support::H5Utilities::extractObjectName(datasetPath);
   QString objType;
 
   //std::cout << "HDFGraphicsDelegate::displayHDFData: " << datasetPath << std::endl;
@@ -601,7 +599,7 @@ herr_t H5Studio::updateGeneralTable(const QString &path)
     size_t attr_size;
    // std::string res;
     std::vector<hsize_t> dims;
-    err = H5Lite::getDatasetInfo(this->_fileId, datasetPath, dims, attr_type, attr_size);
+    err = H5Support::H5Lite::getDatasetInfo(this->_fileId, datasetPath, dims, attr_type, attr_size);
     if (err < 0)
     {
       std::cout << "Could not get dataset info for " << datasetPath << std::endl;
@@ -625,7 +623,7 @@ herr_t H5Studio::updateGeneralTable(const QString &path)
     }
     addRow(generalTable, row, "Dimensions Size(s)", key);
     row++;
-    hid_t typeId = H5Lite::getDatasetType(this->_fileId, datasetPath);
+    hid_t typeId = H5Support::H5Lite::getDatasetType(this->_fileId, datasetPath);
     QString theType;
     if (attr_type == H5T_STRING)
     {
@@ -633,7 +631,7 @@ herr_t H5Studio::updateGeneralTable(const QString &path)
     }
     else
     {
-      theType = QString::fromStdString( H5Lite::StringForHDFType(typeId) );
+      theType = QString::fromStdString( H5Support::H5Lite::StringForHDFType(typeId) );
     }
     err = H5Tclose(typeId);
     addRow(generalTable, row, "Data Type", theType);
@@ -747,10 +745,10 @@ herr_t H5Studio::updateAttributeTable(const QString &path)
   if (NULL != attributesTable)
   {
     attributesTable->clearContents(); // Clear the attributes Table
-    //std::list<std::string> attributes;
-    MXAAbstractAttributes attributes;
-    //err = H5Utilities::getAllAttributeNames(this->_fileId, datasetPath, attributes);
-    err = H5Utilities::readAllAttributes(this->_fileId, datasetPath, attributes);
+    std::list<std::string> attributes;
+    //MXAAbstractAttributes attributes;
+    //err = H5Support::H5Utilities::getAllAttributeNames(this->_fileId, datasetPath, attributes);
+    //err = H5Support::H5Utilities::readAllAttributes(this->_fileId, datasetPath, attributes);
     if (err < 0)
     {
       std::cout << "Error Reading Attributes for datasetPath: " << datasetPath << std::endl;
@@ -764,21 +762,21 @@ herr_t H5Studio::updateAttributeTable(const QString &path)
       headerLabels.insert(0, tr("Name"));
       headerLabels.insert(1, tr("Value"));
       attributesTable->setHorizontalHeaderLabels( headerLabels );
-      IDataArray::Pointer attr;
+      //IDataArray::Pointer attr;
       qint32 row = 0;
-      for (MXAAbstractAttributes::iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
-      {
-        std::string key = (*iter).first;
-        attr = (*iter).second;
-        QTableWidgetItem* keyItem = new QTableWidgetItem ( key.c_str() );
-        attributesTable->setItem(row, 0, keyItem);
+      // for (MXAAbstractAttributes::iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
+      // {
+      //   std::string key = (*iter).first;
+      //   attr = (*iter).second;
+      //   QTableWidgetItem* keyItem = new QTableWidgetItem ( key.c_str() );
+      //   attributesTable->setItem(row, 0, keyItem);
 
-        QTableWidgetItem* valueItem = new QTableWidgetItem ( attr->valueToString(' ').c_str() );
-        attributesTable->setItem(row, 1, valueItem);
+      //   QTableWidgetItem* valueItem = new QTableWidgetItem ( attr->valueToString(' ').c_str() );
+      //   attributesTable->setItem(row, 1, valueItem);
 
 
-        ++row;
-      }
+      //   ++row;
+      // }
     }
   }
   return err;

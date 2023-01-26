@@ -70,12 +70,12 @@ herr_t QHDF5TableModel::_initializeInfo()
       reset();
       emit layoutChanged();
     }
-    else if ( H5Utilities::isGroup(_fileId, _datasetPath) == false) // Not a Group
+    else if ( H5Support::H5Utilities::isGroup(_fileId, _datasetPath) == false) // Not a Group
     {
       std::vector<hsize_t> dims;
       H5T_class_t ds_type;
       size_t type_size;
-      err = H5Lite::getDatasetInfo(_fileId, _datasetPath, dims, ds_type, type_size);
+      err = H5Support::H5Lite::getDatasetInfo(_fileId, _datasetPath, dims, ds_type, type_size);
       if (err < 0)
       {
         std::cout << "ERROR: Could not get dataset Info for " << _datasetPath << std::endl;
@@ -95,7 +95,7 @@ herr_t QHDF5TableModel::_initializeInfo()
       }
       //Get the data from the file
       hid_t typeId = 0;
-      typeId = H5Lite::getDatasetType(_fileId, _datasetPath);
+      typeId = H5Support::H5Lite::getDatasetType(_fileId, _datasetPath);
       if (typeId < 0)
       {
         std::cout << "QHDF5TableModel::_initializeInfo  ERROR: Unable to retrieve type info for " << _datasetPath << " typeId=" << typeId << std::endl;
@@ -105,7 +105,7 @@ herr_t QHDF5TableModel::_initializeInfo()
         switch(ds_type)
         {
         case H5T_STRING:
-          err = H5Lite::readStringDataset(_fileId, _datasetPath, res);
+          err = H5Support::H5Lite::readStringDataset(_fileId, _datasetPath, res);
           //TODO: Do somethign with the data
           break;
         case H5T_INTEGER:
@@ -143,7 +143,7 @@ herr_t QHDF5TableModel::_initializeInfo()
           break;
         default:
           std::cout << "Error: readUserMetaData() Unknown attribute type: " << ds_type << std::endl;
-          H5Utilities::printHDFClassType(ds_type);
+          H5Support::H5Utilities::printHDFClassType(ds_type);
         }
         CloseH5T(typeId, err, retErr); //Close the H5A type Id that was retrieved during the loop
         reset();

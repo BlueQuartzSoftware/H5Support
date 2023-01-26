@@ -8,10 +8,6 @@
 #include "H5Support/H5Lite.h"
 #include "H5Support/H5Utilities.h"
 
-#include "DREAM3DLib/Common/IDataArray.h"
-
-
-
 
 // -----------------------------------------------------------------------------
 //
@@ -52,7 +48,7 @@ void QHDFGroupPropertiesWindow::init()
 void QHDFGroupPropertiesWindow::initGeneralTab()
 {
   std::string datasetPath = this->_hdfPath.toStdString();
-  std::string objName = H5Utilities::extractObjectName(datasetPath);
+  std::string objName = H5Support::H5Utilities::extractObjectName(datasetPath);
   QString objTypeStr;
 
   this->setWindowTitle("Properties - " + QString::fromStdString(objName) );
@@ -195,8 +191,9 @@ void QHDFGroupPropertiesWindow::initAttributesTab()
    if (NULL != attributesTable)
    {
      attributesTable->clearContents(); // Clear the attributes Table
-     MXAAbstractAttributes attributes;
-     err = H5Utilities::readAllAttributes(this->_fileId, datasetPath, attributes);
+     std::list<QString> attributes;
+    //  MXAAbstractAttributes attributes;
+    //  err = H5Support::H5Utilities::readAllAttributes(this->_fileId, datasetPath, attributes);
 
      if (err < 0)
      {
@@ -212,27 +209,27 @@ void QHDFGroupPropertiesWindow::initAttributesTab()
        headerLabels.insert(1, tr("Value"));
        headerLabels.insert(2, tr("Type"));
        attributesTable->setHorizontalHeaderLabels( headerLabels );
-       IDataArray::Pointer attr;
+      // IDataArray::Pointer attr;
        qint32 row = 0;
-       for (MXAAbstractAttributes::iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
-       {
+      //  for (MXAAbstractAttributes::iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
+      //  {
 
-         std::string key = (*iter).first;
-         attr = (*iter).second;
-         int32_t attrInt = attr->getDataType();
-         std::string aType = H5Lite::StringForHDFType( attrInt );
+      //    std::string key = (*iter).first;
+      //    attr = (*iter).second;
+      //    int32_t attrInt = attr->getDataType();
+      //    std::string aType = H5Support::H5Lite::StringForHDFType( attrInt );
 
-         QTableWidgetItem* keyItem = new QTableWidgetItem ( key.c_str() );
-         attributesTable->setItem(row, 0, keyItem);
+      //    QTableWidgetItem* keyItem = new QTableWidgetItem ( key.c_str() );
+      //    attributesTable->setItem(row, 0, keyItem);
 
-         QTableWidgetItem* valueItem = new QTableWidgetItem ( attr->valueToString(' ').c_str() );
-         attributesTable->setItem(row, 1, valueItem);
+      //    QTableWidgetItem* valueItem = new QTableWidgetItem ( attr->valueToString(' ').c_str() );
+      //    attributesTable->setItem(row, 1, valueItem);
 
-         QTableWidgetItem* typeItem = new QTableWidgetItem( aType.c_str() );
-         attributesTable->setItem(row, 2, typeItem);
+      //    QTableWidgetItem* typeItem = new QTableWidgetItem( aType.c_str() );
+      //    attributesTable->setItem(row, 2, typeItem);
 
-         ++row;
-       }
+      //    ++row;
+      //  }
        this->numberOfAttributes->setText(QString::number(attributes.size()) );
      }
    }

@@ -200,15 +200,15 @@ void QHDF5TreeModelItem::initializeChildCount()
 
   QString path = generateHDFPath();
 
-  hid_t obj_id = H5Utilities::openHDF5Object(this->_fileId, path.toStdString());
+  hid_t obj_id = H5Support::H5Utilities::openHDF5Object(this->_fileId, path.toStdString());
   if (obj_id > 0) {
     H5O_info_t object_info;
     err = H5Oget_info(obj_id, &object_info);
     this->_num_attrs = object_info.num_attrs;
   }
-  H5Utilities::closeHDF5Object(obj_id);
+  H5Support::H5Utilities::closeHDF5Object(obj_id);
 
-  if (H5Utilities::isGroup(this->_fileId, path.toStdString()) )
+  if (H5Support::H5Utilities::isGroup(this->_fileId, path.toStdString()) )
   {
     this->_isGroup = true;
     hid_t groupId = H5Gopen(this->_fileId, path.toStdString().c_str(), H5P_DEFAULT);
@@ -259,7 +259,7 @@ void QHDF5TreeModelItem::initializeChildItems()
 
   //std::cout << "QHDF5TreeModelItem::initializeChildItems() - Generated Path as: " << path.toStdString() << std::endl;
   // Check to see if the path is a group or data set
-  if (H5Utilities::isGroup(this->_fileId, path.toStdString()) )
+  if (H5Support::H5Utilities::isGroup(this->_fileId, path.toStdString()) )
   {
     this->_isGroup = true;
     hid_t groupId = H5Gopen(this->_fileId, path.toStdString().c_str(), H5P_DEFAULT);
@@ -274,7 +274,7 @@ void QHDF5TreeModelItem::initializeChildItems()
     this->_num_attrs = object_info.num_attrs;
 
     std::list<std::string> itemList;
-    herr_t err = H5Utilities::getGroupObjects(groupId, H5Utilities::H5Support_ANY, itemList);
+    herr_t err = H5Support::H5Utilities::getGroupObjects(groupId, H5Support::H5Utilities::H5Support_ANY, itemList);
     if (err < 0)
     {
       std::cout << "Error getting group objects. " <<__FILE__ << ":" << __LINE__ << std::endl;
@@ -297,7 +297,7 @@ void QHDF5TreeModelItem::initializeChildItems()
   else  // Get some basic information about the data set
   {
     //std::cout << "TreeModelItem is a DataSet" << std::endl;
-    hid_t obj_id = H5Utilities::openHDF5Object(this->_fileId, path.toStdString());
+    hid_t obj_id = H5Support::H5Utilities::openHDF5Object(this->_fileId, path.toStdString());
     if (obj_id > 0) {
       H5O_info_t object_info;
       err = H5Oget_info(obj_id, &object_info);
@@ -307,7 +307,7 @@ void QHDF5TreeModelItem::initializeChildItems()
     {
       // Test for Image Class attribute
       std::string data;
-      err = H5Lite::readStringAttribute(this->_fileId, path.toStdString(), "CLASS", data);
+      err = H5Support::H5Lite::readStringAttribute(this->_fileId, path.toStdString(), "CLASS", data);
       if (err >= 0)
       {
         this->_isImage = true;
@@ -317,7 +317,7 @@ void QHDF5TreeModelItem::initializeChildItems()
     std::vector<hsize_t> dims;
     H5T_class_t data_type;
     size_t type_size;
-    err = H5Lite::getDatasetInfo(this->_fileId, path.toStdString(), dims, data_type, type_size);
+    err = H5Support::H5Lite::getDatasetInfo(this->_fileId, path.toStdString(), dims, data_type, type_size);
     this->_numDims = dims.size();
 
     switch (data_type)
@@ -330,7 +330,7 @@ void QHDF5TreeModelItem::initializeChildItems()
         this->_dataType = "OTHER";
     }
 
-    err = H5Utilities::closeHDF5Object(obj_id);
+    err = H5Support::H5Utilities::closeHDF5Object(obj_id);
     if (err < 0)
     {
       //TODO: Catch this error

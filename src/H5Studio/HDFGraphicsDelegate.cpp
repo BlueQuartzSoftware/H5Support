@@ -21,12 +21,6 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QGraphicsPixmapItem>
 
-//-- MXA Includes
-#include "MXA/MXA.h"
-#include <MXA/Common/LogTime.h>
-#include <MXA/Common/MXATypeDefs.h>
-
-
 #include "H5Support/H5Lite.h"
 #include "H5Support/H5Image.h"
 #include "H5Support/H5Utilities.h"

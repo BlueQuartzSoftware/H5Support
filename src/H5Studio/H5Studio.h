@@ -19,7 +19,7 @@
 
 
 //-- UIC generated Header
-#include <ui_QHDFViewer.h>
+#include <ui_H5Studio.h>
 
 //-- MXAViewer Includes
 #include "HDFGraphicsDelegate.h"
@@ -138,21 +138,21 @@ private:
       QAction* actionOpen = new QAction(this);
       actionOpen->setObjectName(QString::fromUtf8("actionOpen"));
       actionOpen->setShortcutContext(Qt::WidgetShortcut);
-      actionOpen->setText(QApplication::translate("H5Studio", "Open ...", 0, QApplication::UnicodeUTF8));
-      actionOpen->setShortcut(QApplication::translate("H5Studio", "Ctrl+O", 0, QApplication::UnicodeUTF8));
+      actionOpen->setText(QApplication::translate("H5Studio", "Open ...", 0));
+      actionOpen->setShortcut(QApplication::translate("H5Studio", "Ctrl+O", 0));
 
       QAction* actionClose = new QAction(this);
       actionClose->setObjectName(QString::fromUtf8("actionClose"));
       actionClose->setShortcutContext(Qt::WidgetShortcut);
-      actionClose->setText(QApplication::translate("H5Studio", "Close", 0, QApplication::UnicodeUTF8));
-      actionClose->setShortcut(QApplication::translate("H5Studio", "Ctrl+W", 0, QApplication::UnicodeUTF8));
+      actionClose->setText(QApplication::translate("H5Studio", "Close", 0));
+      actionClose->setShortcut(QApplication::translate("H5Studio", "Ctrl+W", 0));
 
       menuFile->addAction(actionOpen);
       menuFile->addAction(actionClose);
 
       menu_RecentFiles = new QMenu(menuFile);
       menu_RecentFiles->setObjectName(QString::fromUtf8("menu_RecentFiles"));
-      menu_RecentFiles->setTitle(QApplication::translate("H5Studio", "Recent Files...", 0, QApplication::UnicodeUTF8));
+      menu_RecentFiles->setTitle(QApplication::translate("H5Studio", "Recent Files...", 0));
 
 
       menuFile->addSeparator();

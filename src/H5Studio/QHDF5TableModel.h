@@ -103,7 +103,7 @@ private:
     QHDF5_2DDataset<T>* hdf2DDataset = new QHDF5_2DDataset<T>;
     hdf2DDataset->setDimensions(dims);
     std::vector<T> &rawData = hdf2DDataset->getDataRef();
-    err = H5Lite::readVectorDataset(_fileId, _datasetPath, rawData);
+    err = H5Support::H5Lite::readVectorDataset(_fileId, _datasetPath, rawData);
     if ( err < 0) {
       std::cout << "ERROR: QHDF5TableModel::_setDataArray Could not read data from HDF5 File." << std::endl;
       return;

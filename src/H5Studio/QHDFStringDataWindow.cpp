@@ -40,8 +40,7 @@ void QHDFStringDataWindow::init()
   QFileInfo fi(this->_filePath);
   this->setWindowTitle( fi.fileName() + "::" + this->_hdfPath );
 
-  QByteArray data;
-
+  std::string data;
   hid_t fileId = this->_fileId;
   if (fileId < 0)
   {
@@ -53,7 +52,7 @@ void QHDFStringDataWindow::init()
   std::string res;
 
   std::vector<hsize_t> dims;
-  err = H5Lite::getDatasetInfo(fileId, this->_hdfPath.toStdString(), dims, attr_type, attr_size);
+  err = H5Support::H5Lite::getDatasetInfo(fileId, this->_hdfPath.toStdString(), dims, attr_type, attr_size);
   if (err < 0)
   {
     return;
@@ -62,20 +61,18 @@ void QHDFStringDataWindow::init()
 
   if (size > 0) // NOT an empty String
   {
-    data.resize( size );
-    uint8_t* dest = (uint8_t*)(data.data());
-    if (NULL != dest)
-    {
-      err = H5Lite::readStringDataset(fileId, this->_hdfPath.toStdString(), dest);
+
+
+      err = H5Support::H5Lite::readStringDataset(fileId, this->_hdfPath.toStdString(), data);
       if (err >= 0)
       {
-        this->stringData->setText( QString(data.constData() ) );
+        this->stringData->setText( QString::fromStdString(data) );
       }
       else
       {
         std::cout << "Error reading data set " << this->_hdfPath.toStdString() << std::endl;
       }
-    }
+ 
 
   }
 }

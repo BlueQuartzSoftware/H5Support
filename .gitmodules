@@ -1,0 +1,3 @@
+[submodule "3rdParty/H5Support"]
+	path = 3rdParty/H5Support
+	url = https://github.com/BlueQuartzSoftware/H5Support

@@ -57,14 +57,14 @@ public:
     QAction* actionOpen = new QAction(this);
     actionOpen->setObjectName(QString::fromUtf8("actionOpen"));
     actionOpen->setShortcutContext(Qt::WidgetShortcut);
-    actionOpen->setText(QApplication::translate("IH5DataWindow", "Open ...", 0, QApplication::UnicodeUTF8));
-    actionOpen->setShortcut(QApplication::translate("IH5DataWindow", "Ctrl+O", 0, QApplication::UnicodeUTF8));
+    actionOpen->setText(QApplication::translate("IH5DataWindow", "Open ...", 0));
+    actionOpen->setShortcut(QApplication::translate("IH5DataWindow", "Ctrl+O", 0));
 
     QAction* actionClose = new QAction(this);
     actionClose->setObjectName(QString::fromUtf8("actionClose"));
     actionClose->setShortcutContext(Qt::WidgetShortcut);
-    actionClose->setText(QApplication::translate("IH5DataWindow", "Close", 0, QApplication::UnicodeUTF8));
-    actionClose->setShortcut(QApplication::translate("IH5DataWindow", "Ctrl+W", 0, QApplication::UnicodeUTF8));
+    actionClose->setText(QApplication::translate("IH5DataWindow", "Close", 0));
+    actionClose->setShortcut(QApplication::translate("IH5DataWindow", "Ctrl+W", 0));
 
     menuFile->addAction(actionOpen);
     menuFile->addAction(actionClose);

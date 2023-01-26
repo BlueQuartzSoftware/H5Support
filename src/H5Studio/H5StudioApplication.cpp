@@ -28,7 +28,7 @@
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-#include "QHDFViewerApplication.h"
+#include "H5StudioApplication.h"
 #include <string>
 #include <iostream>
 #include "H5Studio.h"
@@ -36,7 +36,7 @@
 // -----------------------------------------------------------------------------
 //
 // -----------------------------------------------------------------------------
-QHDFViewerApplication::QHDFViewerApplication(int &argc, char **argv)
+H5StudioApplication::H5StudioApplication(int &argc, char **argv)
     : QApplication(argc, argv)
 {
 }
@@ -44,13 +44,13 @@ QHDFViewerApplication::QHDFViewerApplication(int &argc, char **argv)
 // -----------------------------------------------------------------------------
 //
 // -----------------------------------------------------------------------------
-QHDFViewerApplication::~QHDFViewerApplication()
+H5StudioApplication::~H5StudioApplication()
 {}
 
 // -----------------------------------------------------------------------------
 //
 // -----------------------------------------------------------------------------
-bool QHDFViewerApplication::event(QEvent *ev)
+bool H5StudioApplication::event(QEvent *ev)
 {
     bool eaten;
     bool fileIsOpen = false;

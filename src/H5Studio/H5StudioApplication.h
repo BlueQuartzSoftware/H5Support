@@ -27,8 +27,8 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-#ifndef QHDFVIEWERAPPLICATION_H_
-#define QHDFVIEWERAPPLICATION_H_
+#ifndef H5StudioAPPLICATION_H_
+#define H5StudioAPPLICATION_H_
 
 
 //-- Qt Headers
@@ -41,16 +41,16 @@
 /**
  *
  */
-class QHDFViewerApplication : public QApplication
+class H5StudioApplication : public QApplication
 {
     Q_OBJECT
 public:
-    QHDFViewerApplication(int &argc, char **argv);
-    virtual ~QHDFViewerApplication();
+    H5StudioApplication(int &argc, char **argv);
+    virtual ~H5StudioApplication();
 
 protected:
     virtual bool event(QEvent *ev);
 
 };
 
-#endif /* QHDFVIEWERAPPLICATION_H_ */
+#endif /* H5StudioAPPLICATION_H_ */
