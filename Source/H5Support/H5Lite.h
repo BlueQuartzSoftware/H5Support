@@ -368,52 +368,52 @@ inline std::string StringForHDFType(hid_t dataTypeIdentifier)
     return "H5T_STRING";
   }
 
-  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_INT8) != 0)
+  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_INT8) > 0)
   {
     return "H5T_NATIVE_INT8";
   }
-  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_UINT8) != 0)
+  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_UINT8) > 0)
   {
     return "H5T_NATIVE_UINT8";
   }
 
-  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_INT16) != 0)
+  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_INT16) > 0)
   {
     return "H5T_NATIVE_INT16";
   }
-  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_UINT16) != 0)
+  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_UINT16) > 0)
   {
     return "H5T_NATIVE_UINT16";
   }
 
-  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_INT32) != 0)
+  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_INT32) > 0)
   {
     return "H5T_NATIVE_INT32";
   }
-  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_UINT32) != 0)
+  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_UINT32) > 0)
   {
     return "H5T_NATIVE_UINT32";
   }
 
-  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_INT64) != 0)
+  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_INT64) > 0)
   {
     return "H5T_NATIVE_INT64";
   }
-  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_UINT64) != 0)
+  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_UINT64) > 0)
   {
     return "H5T_NATIVE_UINT64";
   }
 
-  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_FLOAT) != 0)
+  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_FLOAT) > 0)
   {
     return "H5T_NATIVE_FLOAT";
   }
-  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_DOUBLE) != 0)
+  if(H5Tequal(dataTypeIdentifier, H5T_NATIVE_DOUBLE) > 0)
   {
     return "H5T_NATIVE_DOUBLE";
   }
 
-  std::cout << "Error: HDFTypeForPrimitiveAsStr - Unknown Type: " << dataTypeIdentifier << std::endl;
+  std::cout << "Error: StringForHDFType - Did not find a matching numeric type: " << dataTypeIdentifier << std::endl;
   return "Unknown";
 }
 
