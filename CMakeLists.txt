@@ -84,10 +84,10 @@ endif()
 #------------------------------------------------------------------------------
 # Find the HDF5 Library
 #------------------------------------------------------------------------------
-if(SIMPL_EMBED_PYTHON) # -- HDF5 is located in a python virtual environment
+if(DREAM3D_ANACONDA) # -- HDF5 is located in a python virtual environment
   set(HDF5_USE_STATIC_LIBRARIES OFF)
   set(HDF5_FIND_COMPONENTS OFF)
-  find_package(HDF5 1.10.6 EXACT MODULE REQUIRED)
+  find_package(HDF5 MODULE REQUIRED)
   set(HDF5_C_TARGET_NAME hdf5::hdf5)
   target_compile_definitions(H5Support INTERFACE H5_BUILT_AS_DYNAMIC_LIB)
 else() # -- Normal build with HDF5 found using HDF5Config.cmake
@@ -115,7 +115,6 @@ else() # -- Normal build with HDF5 found using HDF5Config.cmake
 endif()
 target_include_directories(H5Support INTERFACE ${HDF5_INCLUDE_DIR})
 target_link_libraries(H5Support INTERFACE ${HDF5_C_TARGET_NAME})
-
 
 #------------------------------------------------------------------------------
 # Find the Qt5 Library if needed
