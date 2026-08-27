@@ -49,22 +49,19 @@
  * Define the libraries features and file compatibility that will be used when opening
  * or creating a file
  */
-#if(H5_VERS_MINOR == 8)
+#if(H5_VERS_MAJOR >= 2)
+#define HDF5_VERSION_LIB_LOWER_BOUNDS H5F_LIBVER_V200
+#define HDF5_VERSION_LIB_UPPER_BOUNDS H5F_LIBVER_LATEST
+#elif(H5_VERS_MINOR == 8)
 #define HDF5_VERSION_LIB_LOWER_BOUNDS H5F_LIBVER_18
 #define HDF5_VERSION_LIB_UPPER_BOUNDS H5F_LIBVER_LATEST
-#endif
-
-#if(H5_VERS_MINOR == 10)
+#elif(H5_VERS_MINOR == 10)
 #define HDF5_VERSION_LIB_LOWER_BOUNDS H5F_LIBVER_V110
 #define HDF5_VERSION_LIB_UPPER_BOUNDS H5F_LIBVER_LATEST
-#endif
-
-#if(H5_VERS_MINOR == 12)
+#elif(H5_VERS_MINOR == 12)
 #define HDF5_VERSION_LIB_LOWER_BOUNDS H5F_LIBVER_V112
 #define HDF5_VERSION_LIB_UPPER_BOUNDS H5F_LIBVER_LATEST
-#endif
-
-#if(H5_VERS_MINOR == 14)
+#elif(H5_VERS_MINOR == 14)
 #define HDF5_VERSION_LIB_LOWER_BOUNDS H5F_LIBVER_V114
 #define HDF5_VERSION_LIB_UPPER_BOUNDS H5F_LIBVER_LATEST
 #endif
@@ -73,7 +70,8 @@
 #error HDF5_VERSION_LIB_LOWER_BOUNDS is not defined. Please check the version of HDF5 that you are compiling against
 #endif
 
-namespace H5Support {
+namespace H5Support
+{
 
 #define ENABLE_BITMASK_OPERATORS(x)                                                                                                                                                                    \
   template <>                                                                                                                                                                                          \
